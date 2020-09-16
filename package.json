@@ -10,7 +10,6 @@
   "author": "hikvineh",
   "license": "ISC",
   "dependencies": {
-    "babel-cli": "^6.26.0",
     "cors": "2.8.5",
     "dotenv": "8.0.0",
     "express": "^4.16.3",
