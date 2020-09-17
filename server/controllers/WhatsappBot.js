@@ -34,24 +34,34 @@ class WhatsappBot {
 
   static async covidData(req, res, next) {
     const twiml = new MessagingResponse();
+    const commandList = "Command List: \n" + 
+    "- CASES <country code> (To retrieve total cases for specific country)\n" +
+    "- DEATHS <country code> (To retrieve total death cases for specific country)\n" +
+    "- CASES TOTAL (To retrieve total cases globally)\n" +
+    "- DEATHS TOTAL (To retrieve total death cases globally)\n";
     let q = req.body.Body;
     let result;
     let option;
     let countryCode = "none";
-    let text = "Command Not Found";
+    let text = commandList;
 
     try {
+      const string = q.split(' ');
+      if(string.length > 2) {
+        twiml.message(text);
+        res.set('Content-Type', 'text/xml');
+        return res.status(200).send(twiml.toString());
+      }
+
       if(q.startsWith("CASES TOTAL")) {
         option = "totalCases"
       } else if(q.startsWith("DEATHS TOTAL")) {
         option = "totalDeaths"
       } else if(q.startsWith("CASES")) {
         option = "cases";
-        var string = q.split(' ');
         countryCode = string[1];
       } else if(q.startsWith("DEATHS")) {
         option = "deaths";
-        var string = q.split(' ');
         countryCode = string[1];
       }  else {
         twiml.message(text);
