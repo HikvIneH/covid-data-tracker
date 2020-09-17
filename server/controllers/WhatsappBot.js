@@ -34,15 +34,15 @@ class WhatsappBot {
 
   static async covidData(req, res, next) {
     const twiml = new MessagingResponse();
-    const commandList = "Command List: \n" + 
-    "- *CASES <country code>* \n (To retrieve total cases for specific country)\n" +
-    "- *DEATHS <country code>* \n (To retrieve total death cases for specific country)\n" +
-    "- *CASES TOTAL* \n (To retrieve total cases globally)\n" +
-    "- *DEATHS TOTAL* \n (To retrieve total death cases globally)\n";
     let q = req.body.Body;
     let result;
     let option;
     let countryCode = "none";
+    const commandList = "Command List: \n" + 
+    "- *CASES <country code>* \n (Retrieves total cases for specific country)\n" +
+    "- *DEATHS <country code>* \n (Retrieves total death cases for specific country)\n" +
+    "- *CASES TOTAL* \n (Retrieves total cases globally)\n" +
+    "- *DEATHS TOTAL* \n (Retrieves total death cases globally)\n";
     let text = commandList;
 
     try {
@@ -81,7 +81,7 @@ class WhatsappBot {
           result = getGlobalData(option, responseGlobal)
           break;
         default:
-          result = "I have never heard of that fruit...";
+          result = "Not Found";
       }
 
 
@@ -111,7 +111,6 @@ class WhatsappBot {
       }
 
       twiml.message(`${result}`);
-
       res.set('Content-Type', 'text/xml');
 
       return res.status(200).send(twiml.toString());
