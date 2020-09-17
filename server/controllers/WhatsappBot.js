@@ -38,26 +38,26 @@ class WhatsappBot {
     let result;
     let option;
     let countryCode = "none";
+    let text = "Command Not Found";
 
     try {
-      if(q.startsWith("CASES")) {
-        option = "cases";
-        var string = q.split(' ');
-        countryCode = string[2];
-      } else if(q.startsWith("DEATHS")) {
-        option = "deaths";
-        var string = q.split(' ');
-        countryCode = string[2];
-      } else if(q.startsWith("CASES TOTAL")) {
+      if(q.startsWith("CASES TOTAL")) {
         option = "totalCases"
       } else if(q.startsWith("DEATHS TOTAL")) {
         option = "totalDeaths"
-      } else {
-        twiml.message(`Not Found`);
+      } else if(q.startsWith("CASES")) {
+        option = "cases";
+        var string = q.split(' ');
+        countryCode = string[1];
+      } else if(q.startsWith("DEATHS")) {
+        option = "deaths";
+        var string = q.split(' ');
+        countryCode = string[1];
+      }  else {
+        twiml.message(text);
         res.set('Content-Type', 'text/xml');
         return res.status(200).send(twiml.toString());
       }
-
 
       switch(option) {
         case "cases":
@@ -79,30 +79,26 @@ class WhatsappBot {
         let country;
         for (let i = 0; i < responseCountry.length; i++) {
           country = responseCountry[i];
-          if(country.countryInfo.iso2 === countryCode) {
-            country = JSON.stringify(country);
+          if(country.countryInfo.iso2 === countryCode || country.countryInfo.iso3 === countryCode) {
             break;           
           } else {
             continue;
           }
         }
-
         if(option === 'cases') {
-          return country.cases;
+          return "Total cases in " + country.country + " is: " + country.cases + " cases";
         } else if (option === 'deaths') {
-          return country.deaths;
+          return "Total death cases in " + country.country + " is: " + country.deaths + " cases";
         }
       }
 
       function getGlobalData(option, responseGlobal) {
         if(option === 'totalCases') {
-          return responseGlobal.cases;
+          return "Total cases global cases is: " + responseGlobal.cases + " cases";
         } else if (option === 'totalDeaths') {
-          return responseGlobal.deaths;
+          return "Total cases global death cases is: " + responseGlobal.deaths + " cases";
         }
       }
-
-      console.log(result);
 
       twiml.message(`${result}`);
 
