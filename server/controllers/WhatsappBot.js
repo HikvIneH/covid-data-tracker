@@ -36,23 +36,72 @@ class WhatsappBot {
     const twiml = new MessagingResponse();
     let q = req.body.Body;
     let result;
+    let option;
+    let countryCode = "none";
 
     try {
-      const response = await jsonCache.get('data');
+      if(q.startsWith("CASES")) {
+        option = "cases";
+        var string = q.split(' ');
+        countryCode = string[2];
+      } else if(q.startsWith("DEATHS")) {
+        option = "deaths";
+        var string = q.split(' ');
+        countryCode = string[2];
+      } else if(q.startsWith("CASES TOTAL")) {
+        option = "totalCases"
+      } else if(q.startsWith("DEATHS TOTAL")) {
+        option = "totalDeaths"
+      } else {
+        twiml.message(`Not Found`);
+        res.set('Content-Type', 'text/xml');
+        return res.status(200).send(twiml.toString());
+      }
 
-      console.log(response[0].countryInfo.iso2);
-      
-      // TODO use a better solution for this with map
-      console.log(response[0]);
-      for (let i = 0; i < response.length; i++) {
-          let country = response[i];
-          if(country.countryInfo.iso2 === q) {
-            result = JSON.stringify(country);
+
+      switch(option) {
+        case "cases":
+        case "deaths":
+          const responseCountry = await jsonCache.get('countries');
+          result = searchByCountry(option, countryCode, responseCountry)
+          break;
+        case "totalCases":
+        case "totalDeaths":
+          const responseGlobal = await jsonCache.get('global');
+          result = getGlobalData(option, responseGlobal)
+          break;
+        default:
+          result = "I have never heard of that fruit...";
+      }
+
+
+      function searchByCountry(option, countryCode, responseCountry) {
+        let country;
+        for (let i = 0; i < responseCountry.length; i++) {
+          country = responseCountry[i];
+          if(country.countryInfo.iso2 === countryCode) {
+            country = JSON.stringify(country);
             break;           
           } else {
             continue;
           }
+        }
+
+        if(option === 'cases') {
+          return country.cases;
+        } else if (option === 'deaths') {
+          return country.deaths;
+        }
       }
+
+      function getGlobalData(option, responseGlobal) {
+        if(option === 'totalCases') {
+          return responseGlobal.cases;
+        } else if (option === 'totalDeaths') {
+          return responseGlobal.deaths;
+        }
+      }
+
       console.log(result);
 
       twiml.message(`${result}`);
