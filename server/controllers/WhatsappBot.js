@@ -98,10 +98,10 @@ class WhatsappBot {
         const lastUpdated = getDate(country.updated);
         console.log(lastUpdated)
         if(option === 'cases') {
-          return "Total cases in " + country.country + " is: " + numberWithCommas(country.cases) + " cases.\n\n" +
+          return "Total cases in *" + country.country + "* is: *" + numberWithCommas(country.cases) + " Cases*.\n\n" +
               "Last updated at: " + lastUpdated;
         } else if (option === 'deaths') {
-          return "Total death cases in " + country.country + " is: " + numberWithCommas(country.deaths) + " cases.\n\n" +
+          return "Total death cases in *" + country.country + "* is: *" + numberWithCommas(country.deaths) + " Cases*.\n\n" +
           "Last updated at: " + lastUpdated;
         }
       }
@@ -110,10 +110,10 @@ class WhatsappBot {
         const lastUpdated = getDate(responseGlobal.updated);
 
         if(option === 'totalCases') {
-          return "Total cases global cases is: " + numberWithCommas(responseGlobal.cases) + " cases.\n\n" +
+          return "Total cases global cases is: *" + numberWithCommas(responseGlobal.cases) + " Cases*.\n\n" +
           "Last updated at: " + lastUpdated;
         } else if (option === 'totalDeaths') {
-          return "Total cases global death cases is: " + numberWithCommas(responseGlobal.deaths) + " cases.\n\n" +
+          return "Total cases global death cases is: *" + numberWithCommas(responseGlobal.deaths) + " Cases*.\n\n" +
           "Last updated at: " + lastUpdated;
         }
       }
