@@ -35,10 +35,10 @@ class WhatsappBot {
   static async covidData(req, res, next) {
     const twiml = new MessagingResponse();
     const commandList = "Command List: \n" + 
-    "- CASES <country code> (To retrieve total cases for specific country)\n" +
-    "- DEATHS <country code> (To retrieve total death cases for specific country)\n" +
-    "- CASES TOTAL (To retrieve total cases globally)\n" +
-    "- DEATHS TOTAL (To retrieve total death cases globally)\n";
+    "- *CASES <country code>* \n (To retrieve total cases for specific country)\n" +
+    "- *DEATHS <country code>* \n (To retrieve total death cases for specific country)\n" +
+    "- *CASES TOTAL* \n (To retrieve total cases globally)\n" +
+    "- *DEATHS TOTAL* \n (To retrieve total death cases globally)\n";
     let q = req.body.Body;
     let result;
     let option;
