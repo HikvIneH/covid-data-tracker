@@ -95,19 +95,37 @@ class WhatsappBot {
             continue;
           }
         }
+        const lastUpdated = getDate(country.updated);
+        console.log(lastUpdated)
         if(option === 'cases') {
-          return "Total cases in " + country.country + " is: " + country.cases + " cases";
+          return "Total cases in " + country.country + " is: " + numberWithCommas(country.cases) + " cases.\n\n" +
+              "Last updated at: " + lastUpdated;
         } else if (option === 'deaths') {
-          return "Total death cases in " + country.country + " is: " + country.deaths + " cases";
+          return "Total death cases in " + country.country + " is: " + numberWithCommas(country.deaths) + " cases.\n\n" +
+          "Last updated at: " + lastUpdated;
         }
       }
 
       function getGlobalData(option, responseGlobal) {
+        const lastUpdated = getDate(responseGlobal.updated);
+
         if(option === 'totalCases') {
-          return "Total cases global cases is: " + responseGlobal.cases + " cases";
+          return "Total cases global cases is: " + numberWithCommas(responseGlobal.cases) + " cases.\n\n" +
+          "Last updated at: " + lastUpdated;
         } else if (option === 'totalDeaths') {
-          return "Total cases global death cases is: " + responseGlobal.deaths + " cases";
+          return "Total cases global death cases is: " + numberWithCommas(responseGlobal.deaths) + " cases.\n\n" +
+          "Last updated at: " + lastUpdated;
         }
+      }
+
+      function numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+      }
+
+      function getDate(unixTimestamp) {
+        const date = new Date(unixTimestamp);
+        return date.toLocaleString()
+
       }
 
       twiml.message(`${result}`);
