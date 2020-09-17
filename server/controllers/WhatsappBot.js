@@ -1,6 +1,8 @@
 import dotenv from 'dotenv';
 import twilio from 'twilio';
-import fetch from 'node-fetch';
+import Redis from 'ioredis';
+import JSONCache from 'redis-json';
+
 dotenv.config();
 
 const {
@@ -11,10 +13,16 @@ const {
 twilio(accountSid, TwilloAuthToken);
 const { MessagingResponse } = twilio.twiml;
 
+let REDIS_URL = process.env.REDIS_URL || 'redis://127.0.0.1:6379';
+
+const redis = new Redis(REDIS_URL);
+const jsonCache = new JSONCache(redis, {prefix: 'cache:'})
+
 /**
  * @class WhatsappBot
  * @description class will implement bot functionality
  */
+let resss;
 class WhatsappBot {
   /**
    * @memberof WhatsappBot
@@ -23,14 +31,28 @@ class WhatsappBot {
    * @param {object} next - Error handler
    * @returns {object} - object representing response message
    */
+
   static async covidData(req, res, next) {
     const twiml = new MessagingResponse();
     let q = req.body.Body;
+    let result;
 
     try {
-      let response = await fetch(`https://corona.lmao.ninja/v2/countries/${q}?strict&query`);
-      const data = await response.json();
-      const result = JSON.stringify(data);
+      const response = await jsonCache.get('data');
+
+      console.log(response[0].countryInfo.iso2);
+      
+      // TODO use a better solution for this with map
+      console.log(response[0]);
+      for (let i = 0; i < response.length; i++) {
+          let country = response[i];
+          if(country.countryInfo.iso2 === q) {
+            result = JSON.stringify(country);
+            break;           
+          } else {
+            continue;
+          }
+      }
       console.log(result);
 
       twiml.message(`${result}`);
